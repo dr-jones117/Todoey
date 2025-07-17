@@ -1,0 +1,70 @@
+{{define "todoLists"}}
+    {{range .TodoLists}}
+        {{template "todoList" .}}
+    {{end}}
+{{end}}
+
+{{define "todoList"}}
+  <div 
+    id="todoList-{{.Id}}"
+    class="htmx-zoom-out group/todolist bg-slate-700 rounded px-5 py-5 my-5 mx-0 md:mx-3 max-w-screen shadow-lg rounded-lg"
+  >
+      <!-- Title Input Field -->
+    <div class="flex justify-between p-2">
+      <input 
+        name="title"
+        type="text"
+        placeholder="Title"
+        value="{{.Title}}"
+
+        hx-put="/todo-lists"
+        hx-trigger="input changed delay:1s"
+        hx-swap="innerHTML"
+        hx-vals='{"id": {{.Id}}}'
+
+        class="min-w-0 px-2 py-1 text-white text-xl font-bold border-0 focus:outline-none text-lg block"
+      />
+
+      {{template "delete-todolist-btn" .}}
+    </div>
+
+      <!-- Todo List Container -->
+      <div 
+        id="todoList-container-{{.Id}}"
+        class="overflow-auto no-scrollbar bg-slate-600 rounded-lg mt-3 h-64"
+      >
+        {{range .Todos}}
+            {{template "todo" .}}
+        {{end}}
+      </div>
+      {{template "create-todo-btn" .}}
+
+  </div>
+{{end}}
+
+{{define "create-todo-btn"}}
+    <button 
+      hx-post="/todos" 
+      hx-target="#todoList-container-{{.Id}}" 
+      hx-swap="beforeend transition:true" 
+      hx-vals='{"todolistid": {{.Id}}}'
+
+      class="w-full p-2 mt-3 flex justify-center font-medium tracking-wide text-white transition duration-300 transform bg-green-500 rounded-full hover:bg-green-400 hover:scale-105"
+    >
+      {{template "plus-icon" .}}
+    </button>
+{{end}}
+
+
+{{define "delete-todolist-btn"}}
+    <button 
+      hx-delete="/todo-lists" 
+      hx-target="#todoList-{{.Id}}" 
+      hx-swap="outerHTML swap:300ms" 
+      hx-vals='{"todolistid": {{.Id}}}'
+
+      class="px-2 py-2 transition duration-300 transform bg-transparent rounded-full opacity-100 lg:opacity-0 group-hover/todolist:opacity-100 hover:bg-red-500"
+    >
+      {{template "x-mark-icon" .}}
+    </button>
+{{end}}

@@ -1,0 +1,39 @@
+version: "3"
+
+tasks:
+  start-dev:
+    deps:
+      - css-watch
+      - air
+
+  air:
+    env:
+      DB_HOST: "localhost"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "password"
+      DB_NAME: "todo_db"
+    cmds:
+      - air
+
+  css-watch:
+    desc: "tailwind watch build"
+    cmds:
+      - ./tailwindcss -i css/input.css -o css/output.css --watch
+
+  build-prod:
+    desc: "build the prod applicaiton"
+    cmds:
+      - docker compose build
+  start-prod:
+    desc: "start the prod applicaiton"
+    cmds:
+      - docker compose up
+  start-prod-bg:
+    desc: "start the prod applicaiton in the background"
+    cmds:
+      - docker compose up -d
+  stop-prod:
+    desc: "stop the prod applicaiton"
+    cmds:
+      - docker compose down

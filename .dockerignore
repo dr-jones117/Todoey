@@ -1,0 +1,7 @@
+*.md
+*.log
+Dockerfile
+bin/
+.vscode/
+.task
+tmp/

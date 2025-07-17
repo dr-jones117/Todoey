@@ -1,0 +1,18 @@
+.htmx-swipe-left.htmx-swapping {
+  transform: translate(-100%, 0%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+
+.htmx-zoom-out.htmx-swapping {
+  transform: scale(0.5);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.htmx-zoom-in.htmx-swapping {
+  transform: scale(1);
+  opacity: 100;
+  transition: transform 0.3s ease-in, opacity 0.3s ease-out;
+}

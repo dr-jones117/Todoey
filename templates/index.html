@@ -1,0 +1,47 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Todoey</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="description" content="This is a todo app" />
+  <meta name="keywords" content="todo app" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/output.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/htmx.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+    integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+</head>
+
+<body>
+  <main class="relative v-screen h-screen bg-slate-800 flex flex-col items-center overflow-hidden">
+    <header class="w-full py-5 mx-auto px-12 sticky top-0 shadow-lg">
+      <h1 class="text-5xl text-center font-bold">Todoey</h1>
+    </header>
+    <section 
+      id="todo-lists"
+
+      hx-get="/todo-lists" 
+      hx-trigger="load"
+
+      class="container flex flex-wrap justify-center align-items-center overflow-auto no-scrollbar mt-5"
+    >
+      {{template "loading-icon" .}}
+    </section>
+    {{template "create-todolist-btn" .}}
+  </main>
+</body>
+
+</html>
+{{end}}
