@@ -4,6 +4,7 @@ import (
 	"log"
 	"todo/dataaccess"
 	"todo/dataaccess/postgresdataaccess"
+	"todo/handlers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,7 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	SetupHTTPHandlers(router, dependencies.dataAccess)
+	handlers.SetupHTTPHandlers(router, dependencies.dataAccess)
 
 	log.Println("Server listening on:", port)
 	err := router.Run(":" + port)

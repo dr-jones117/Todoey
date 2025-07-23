@@ -1,16 +1,47 @@
 package postgresdataaccess
 
 import (
+	"database/sql"
 	"fmt"
 	"todo/models"
 )
 
-func (da *PostgresTodoDataAccess) GetUserByUsername(username string) (*models.User, error) {
+func (da *PostgresTodoDataAccess) RegisterUser(userName string, email string, firstName string, lastName string, hashedPassword string, salt string) (*models.User, error) {
 	var user models.User
-	err := da.db.QueryRow(`SELECT id, username, passwordhash, passwordsalt FROM user WHERE username = '$1';`, username).Scan(&user.Id, &user.Username, &user.PasswordHash, &user.PasswordSalt)
+
+	query := `INSERT INTO "user" (user_name, email, first_name, last_name, password_hash, password_salt) VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err := da.db.Exec(query, userName, email, firstName, lastName, hashedPassword, salt)
 	if err != nil {
-		return &user, fmt.Errorf("Unable to find the user with username: %s: %w", username, err)
+		return nil, fmt.Errorf("failed to register user: %w", err)
 	}
 
-	return nil, nil
+	return &user, nil
+}
+
+func (da *PostgresTodoDataAccess) GetUserByUsername(username string) (*models.User, error) {
+	var user models.User
+
+	query := `SELECT id, user_name, email, first_name, last_name, password_hash, password_salt, created_at, is_active 
+              FROM "user" WHERE user_name = $1`
+
+	err := da.db.QueryRow(query, username).Scan(
+		&user.Id,
+		&user.Username,
+		&user.Email,
+		&user.FirstName,
+		&user.LastName,
+		&user.PasswordHash,
+		&user.PasswordSalt,
+		&user.CreatedAt,
+		&user.IsActive,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("user not found with username: %s", username)
+		}
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	return &user, nil
 }

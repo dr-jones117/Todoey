@@ -1,6 +1,10 @@
-package main
+package handlers
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -17,6 +21,28 @@ var (
 	todoDataAccess dataaccess.TodoDataAccess
 )
 
+// Generate random salt
+func GenerateSalt(length int) (string, error) {
+	salt := make([]byte, length)
+	_, err := rand.Read(salt)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate salt: %w", err)
+	}
+	return hex.EncodeToString(salt), nil
+}
+
+// Hash password with salt
+func HashPasswordWithSalt(password, salt string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(password + salt))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+// Verify password with salt
+func VerifyPasswordWithSalt(password, salt, hashedPassword string) bool {
+	return HashPasswordWithSalt(password, salt) == hashedPassword
+}
+
 func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	todoDataAccess = tda
 
@@ -29,9 +55,70 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	})
 
 	// Auth
+	router.POST("/register", func(c *gin.Context) {
+		userName := c.PostForm("userName")
+		if userName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a username"})
+			return
+		}
+
+		email := c.PostForm("email")
+		if email == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a email"})
+			return
+		}
+
+		firstName := c.PostForm("firstName")
+		if firstName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a first name"})
+			return
+		}
+
+		lastName := c.PostForm("lastName")
+		if lastName == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a last name"})
+			return
+		}
+
+		password := c.PostForm("password")
+		if password == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a password"})
+			return
+		}
+
+		confirmPassword := c.PostForm("passwordConfirm")
+		if confirmPassword == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a password confirmation"})
+			return
+		}
+
+		if password != confirmPassword {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords dont match"})
+			return
+		}
+
+		salt, err := GenerateSalt(16)
+		if err != nil {
+			log.Println(err.Error())
+			writeInternalServerError(c.Writer, "Error registering user")
+			return
+		}
+
+		hashedPassword := HashPasswordWithSalt(password, salt)
+		_, err = tda.RegisterUser(userName, email, firstName, lastName, hashedPassword, salt)
+		if err != nil {
+			log.Println(err.Error())
+			writeInternalServerError(c.Writer, "Error registering user")
+			return
+		}
+
+		c.Header("HX-Redirect", "/login")
+		c.Status(http.StatusNoContent)
+	})
+
 	router.POST("/login", func(c *gin.Context) {
-		username := c.PostForm("username")
-		if username == "" {
+		userName := c.PostForm("userName")
+		if userName == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a username"})
 			return
 		}
@@ -41,12 +128,21 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 			return
 		}
 
-		_, err := tda.GetUserByUsername(username)
+		user, err := tda.GetUserByUsername(userName)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Couldnt get user with that username"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "username or password was incorrect"})
 			return
 		}
+
+		isValid := VerifyPasswordWithSalt(password, user.PasswordSalt, user.PasswordHash)
+		if !isValid {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "username or password was incorrect"})
+			return
+		}
+
+		successMsg := fmt.Sprintf("The user %s successfully signed in", user.Username)
+		log.Println(successMsg)
 	})
 
 	authorized := router.Group("/")

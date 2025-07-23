@@ -9,6 +9,7 @@ type TodoDataAccess interface {
 	DisconnectDataAccess() error
 
 	// Users
+	RegisterUser(userName string, email string, firstName string, lastName string, hashedPassword string, salt string) (*models.User, error)
 	GetUserByUsername(username string) (*models.User, error)
 
 	// TodoList
