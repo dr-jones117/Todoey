@@ -22,23 +22,50 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 
 	router.LoadHTMLGlob("templates/**/*.html")
 
+	//Public Static Files
 	router.Static("/css", "./css")
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index", nil)
 	})
 
-	// Todo Lists
-	todoListEndpoint := "/todo-lists"
-	router.GET(todoListEndpoint, getTodoLists)
-	router.POST(todoListEndpoint, createTodoList)
-	router.PUT(todoListEndpoint, updateTodoList)
-	router.DELETE(todoListEndpoint, deleteTodoList)
+	// Auth
+	router.POST("/login", func(c *gin.Context) {
+		username := c.PostForm("username")
+		if username == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a username"})
+			return
+		}
+		password := c.PostForm("password")
+		if password == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a password"})
+			return
+		}
 
-	// Todos
-	todosEndpoint := "/todos"
-	router.POST(todosEndpoint, createTodo)
-	router.PUT(todosEndpoint, updateTodo)
-	router.DELETE(todosEndpoint, deleteTodo)
+		_, err := tda.GetUserByUsername(username)
+		if err != nil {
+			log.Println(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Couldnt get user with that username"})
+			return
+		}
+	})
+
+	authorized := router.Group("/")
+	authorized.Use(AuthRequired())
+	{
+		// Todo Lists
+		todoListEndpoint := "/todo-lists"
+		authorized.GET(todoListEndpoint, getTodoLists)
+		authorized.POST(todoListEndpoint, createTodoList)
+		authorized.PUT(todoListEndpoint, updateTodoList)
+		authorized.DELETE(todoListEndpoint, deleteTodoList)
+
+		// Todos
+		todosEndpoint := "/todos"
+		authorized.POST(todosEndpoint, createTodo)
+		authorized.PUT(todosEndpoint, updateTodo)
+		authorized.DELETE(todosEndpoint, deleteTodo)
+	}
+
 }
 
 func getTodoLists(c *gin.Context) {

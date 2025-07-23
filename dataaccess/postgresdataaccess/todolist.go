@@ -1,80 +1,14 @@
-package dataaccess
+package postgresdataaccess
 
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
 	"sort"
 	"time"
 	"todo/models"
 
 	_ "github.com/lib/pq"
 )
-
-type PostgresTodoDataAccess struct {
-	db *sql.DB
-}
-
-func (da *PostgresTodoDataAccess) ConnectDataAccess() error {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
-
-	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname,
-	)
-
-	fmt.Println(dsn)
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return fmt.Errorf("sql.Open failed: %w", err)
-	}
-
-	da.db = db
-
-	log.Println("✅ Connected to Postgres")
-	return nil
-}
-
-func (da *PostgresTodoDataAccess) DisconnectDataAccess() error {
-	if err := da.db.Close(); err != nil {
-		return fmt.Errorf("error")
-	}
-
-	log.Println("Successfully disconnected from the PostgreSQL server...")
-	return nil
-}
-
-func (da *PostgresTodoDataAccess) CreateTodo(todo models.Todo) (models.Todo, error) {
-	var id uint
-	err := da.db.QueryRow(`INSERT INTO todos(completed, value, todo_list_id) VALUES($1, $2, $3) RETURNING Id;`, todo.Completed, todo.Value, todo.TodoListId).Scan(&id)
-	todo.Id = id
-
-	if err != nil {
-		return todo, fmt.Errorf("unable to create todo: %w", err)
-	}
-	return todo, nil
-}
-
-func (da *PostgresTodoDataAccess) UpdateTodo(todo models.Todo) (models.Todo, error) {
-	_, err := da.db.Exec(`UPDATE todos SET completed = $1, value = $2 WHERE id = $3;`, todo.Completed, todo.Value, todo.Id)
-	if err != nil {
-		return todo, fmt.Errorf("error")
-	}
-
-	return todo, nil
-}
-func (da *PostgresTodoDataAccess) DeleteTodo(id uint) error {
-	_, err := da.db.Exec(`DELETE FROM todos WHERE id = $1;`, id)
-	if err != nil {
-		return fmt.Errorf("error")
-	}
-	return nil
-}
 
 func (da *PostgresTodoDataAccess) GetTodoLists() ([]models.TodoList, error) {
 	rows, err := da.db.Query(`

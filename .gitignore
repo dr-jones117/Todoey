@@ -2,3 +2,4 @@
 .task/
 tmp/
 todo
+liquibase-local.properties

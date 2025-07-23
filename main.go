@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"todo/dataaccess"
+	"todo/dataaccess/postgresdataaccess"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -15,7 +17,7 @@ type Dependencies struct {
 }
 
 func injectDependencies() Dependencies {
-	todoDataAccess := &dataaccess.PostgresTodoDataAccess{}
+	todoDataAccess := &postgresdataaccess.PostgresTodoDataAccess{}
 	if err := todoDataAccess.ConnectDataAccess(); err != nil {
 		log.Fatal(err.Error())
 	}
@@ -33,7 +35,10 @@ func main() {
 	dependencies := injectDependencies()
 	defer shutdownDependencies(dependencies)
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
 	SetupHTTPHandlers(router, dependencies.dataAccess)
 
 	log.Println("Server listening on:", port)
