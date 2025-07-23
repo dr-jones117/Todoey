@@ -2,26 +2,27 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 	"todo/models"
 	"todo/templates"
+
+	"github.com/gin-gonic/gin"
 )
 
-func MapTodoFromRequestForm(r *http.Request) (models.Todo, error) {
+func MapTodoFromRequestForm(c *gin.Context) (models.Todo, error) {
 	var todo models.Todo
 
-	formId, err := strconv.Atoi(r.FormValue("id"))
+	formId, err := strconv.Atoi(c.PostForm("id"))
 	if err != nil {
 		return todo, fmt.Errorf("invalid id")
 	}
 
-	todoListId, err := strconv.Atoi(r.FormValue("todolistid"))
+	todoListId, err := strconv.Atoi(c.PostForm("todolistid"))
 	if err != nil {
 		return todo, fmt.Errorf("invalid todolistid")
 	}
 
-	formCompleted := r.FormValue("completed")
+	formCompleted := c.PostForm("completed")
 	if formCompleted == "true" {
 		todo.Completed = true
 	} else {
@@ -30,7 +31,7 @@ func MapTodoFromRequestForm(r *http.Request) (models.Todo, error) {
 
 	todo.Id = uint(formId)
 	todo.TodoListId = uint(todoListId)
-	todo.Value = r.FormValue("value")
+	todo.Value = c.PostForm("value")
 
 	return todo, nil
 }

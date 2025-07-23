@@ -4,11 +4,12 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
 	"strconv"
 	"todo/dataaccess"
 	"todo/models"
 	"todo/templates"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -16,210 +17,153 @@ var (
 	todoDataAccess dataaccess.TodoDataAccess
 )
 
-func loadTemplates() error {
-	templatesFiles, err := filepath.Glob("templates/*.html")
-	if err != nil {
-		return err
-	}
-
-	iconFiles, err := filepath.Glob("templates/icons/*.html")
-	if err != nil {
-		return err
-	}
-
-	allFiles := append(templatesFiles, iconFiles...)
-
-	tmpl, err = template.ParseFiles(allFiles...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func SetupHTTPHandlers(tda dataaccess.TodoDataAccess) {
+func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	todoDataAccess = tda
 
-	if err := loadTemplates(); err != nil {
-		log.Fatalf("Failed to load templates")
-	}
+	router.LoadHTMLGlob("templates/**/*.html")
 
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
-
-	http.HandleFunc("/todos", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			todoGet(w, r)
-		case http.MethodPost:
-			todoPost(w, r)
-		case http.MethodPut:
-			todoPut(w, r)
-		case http.MethodDelete:
-			todoDelete(w, r)
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusBadRequest)
-		}
+	router.Static("/css", "./css")
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index", nil)
 	})
 
-	http.HandleFunc("/todo-lists", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			todoListsGet(w, r)
-		case http.MethodPost:
-			todoListsPost(w, r)
-		case http.MethodPut:
-			todoListsPut(w, r)
-		case http.MethodDelete:
-			todoListsDelete(w, r)
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusBadRequest)
-		}
-	})
+	// Todo Lists
+	todoListEndpoint := "/todo-lists"
+	router.GET(todoListEndpoint, getTodoLists)
+	router.POST(todoListEndpoint, createTodoList)
+	router.PUT(todoListEndpoint, updateTodoList)
+	router.DELETE(todoListEndpoint, deleteTodoList)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index", nil)
-	})
-
+	// Todos
+	todosEndpoint := "/todos"
+	router.POST(todosEndpoint, createTodo)
+	router.PUT(todosEndpoint, updateTodo)
+	router.DELETE(todosEndpoint, deleteTodo)
 }
 
-func todoListsGet(w http.ResponseWriter, r *http.Request) {
+func getTodoLists(c *gin.Context) {
 	todoLists, err := todoDataAccess.GetTodoLists()
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
-	if err = tmpl.ExecuteTemplate(w, "todoLists", MapTodoListsTemplate(todoLists)); err != nil {
-		writeInternalServerError(w, err.Error())
-		return
-	}
+	c.HTML(http.StatusOK, "todoLists", MapTodoListsTemplate(todoLists))
 }
 
-func todoListsPost(w http.ResponseWriter, r *http.Request) {
+func createTodoList(c *gin.Context) {
 	var todoList models.TodoList
 	todoList, err := todoDataAccess.CreateTodoList(todoList)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
-	if err := tmpl.ExecuteTemplate(w, "todoList", MapTodoListTemplate(todoList)); err != nil {
-		writeInternalServerError(w, "Unable to create todo list template")
-		return
-	}
+	c.HTML(http.StatusOK, "todoList", MapTodoListTemplate(todoList))
 }
 
-func todoListsPut(w http.ResponseWriter, r *http.Request) {
-	strId := r.FormValue("id")
-	title := r.FormValue("title")
+func updateTodoList(c *gin.Context) {
+	strId := c.PostForm("id")
+	title := c.PostForm("title")
 
 	if strId == "" {
-		writeInternalServerError(w, "please provide a todolist id")
+		writeInternalServerError(c.Writer, "please provide a todolist id")
 		return
 	}
 
 	id, err := strconv.Atoi(strId)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
 	todoDataAccess.UpdateTodoList(uint(id), title)
-
 }
 
-func todoListsDelete(w http.ResponseWriter, r *http.Request) {
-	params := r.URL.Query()
-	id, ok := params["todolistid"]
-	if !ok {
-		writeInternalServerError(w, "please provide a todolist id")
+func deleteTodoList(c *gin.Context) {
+	id := c.Query("todolistid")
+	if id == "" {
+		writeInternalServerError(c.Writer, "please provide a todolist id")
 		return
 	}
 
-	idStr, err := strconv.Atoi(id[0])
+	idStr, err := strconv.Atoi(id)
 	if err != nil {
-		writeInternalServerError(w, "invalid id")
+		writeInternalServerError(c.Writer, "invalid id")
 		return
 
 	}
 	err = todoDataAccess.DeleteTodoList(uint(idStr))
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 }
 
-func todoGet(w http.ResponseWriter, r *http.Request) {
-	panic("unimplemented")
-}
-
-func todoPost(w http.ResponseWriter, r *http.Request) {
+func createTodo(c *gin.Context) {
 	var todo models.Todo
 	var err error
 	var todoTemplateData templates.TodoTemplateData
 
-	strTodoListId := r.FormValue("todolistid")
+	strTodoListId := c.PostForm("todolistid")
 	if strTodoListId == "" {
-		writeInternalServerError(w, "No todo list id was supplied")
+		writeInternalServerError(c.Writer, "No todo list id was supplied")
 		return
 	}
 
 	todoListId, err := strconv.Atoi(strTodoListId)
 	if err != nil {
-		writeInternalServerError(w, "invalid todo list id")
+		writeInternalServerError(c.Writer, "invalid todo list id")
 	}
 
-	params := r.URL.Query()
-	_, ok := params["setFocus"]
-	if ok {
+	setFocus := c.Query("setFocus")
+	if setFocus != "" {
 		todoTemplateData.FocusInput = true
 	}
 
 	todo.TodoListId = uint(todoListId)
 	todo, err = todoDataAccess.CreateTodo(todo)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
 	todoTemplateData.Todo = todo
-	tmpl.ExecuteTemplate(w, "todo", todoTemplateData)
-
+	c.HTML(http.StatusOK, "todo", todoTemplateData)
 }
 
-func todoPut(w http.ResponseWriter, r *http.Request) {
-	todo, err := MapTodoFromRequestForm(r)
+func updateTodo(c *gin.Context) {
+	todo, err := MapTodoFromRequestForm(c)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
 	todo, err = todoDataAccess.UpdateTodo(todo)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
-	tmpl.ExecuteTemplate(w, "todo", todo)
+	c.HTML(http.StatusOK, "todo", todo)
 }
 
-func todoDelete(w http.ResponseWriter, r *http.Request) {
-	params := r.URL.Query()
-	idValues, ok := params["id"]
-	if !ok {
-		writeInternalServerError(w, "Please provide an id")
+func deleteTodo(c *gin.Context) {
+	id := c.Query("id")
+	if id == "" {
+		writeInternalServerError(c.Writer, "Please provide an id")
 		return
 	}
 
-	paramId, err := strconv.Atoi(idValues[0])
+	paramId, err := strconv.Atoi(id)
 	if err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 
 	idTofind := uint(paramId)
 	if err := todoDataAccess.DeleteTodo(idTofind); err != nil {
-		writeInternalServerError(w, err.Error())
+		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
 }

@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 	"todo/dataaccess"
 )
 
@@ -15,7 +15,6 @@ type Dependencies struct {
 }
 
 func injectDependencies() Dependencies {
-	// Change structs that implement the interfaces here!
 	todoDataAccess := &dataaccess.PostgresTodoDataAccess{}
 	if err := todoDataAccess.ConnectDataAccess(); err != nil {
 		log.Fatal(err.Error())
@@ -34,11 +33,11 @@ func main() {
 	dependencies := injectDependencies()
 	defer shutdownDependencies(dependencies)
 
-	SetupHTTPHandlers(dependencies.dataAccess)
+	router := gin.Default()
+	SetupHTTPHandlers(router, dependencies.dataAccess)
 
 	log.Println("Server listening on:", port)
-	err := http.ListenAndServe(":"+port, nil)
-
+	err := router.Run(":" + port)
 	if err != nil {
 		log.Fatal(err)
 	}
