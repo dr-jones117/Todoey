@@ -31,6 +31,9 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	// Auth
 	router.POST("/register", Register)
 	router.POST("/login", Login)
+	router.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login", nil)
+	})
 
 	authorized := router.Group("/")
 	authorized.Use(AuthRequired())

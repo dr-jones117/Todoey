@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"todo/handlers/auth"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -95,6 +96,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	session := sessions.Default(c)
+	session.Set("user_id", user.Id)
+	session.Save()
+
 	successMsg := fmt.Sprintf("The user %s successfully signed in", user.Username)
 	log.Println(successMsg)
+
+	c.Status(http.StatusOK)
 }
