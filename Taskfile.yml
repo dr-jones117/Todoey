@@ -37,3 +37,9 @@ tasks:
     desc: "stop the prod applicaiton"
     cmds:
       - docker compose down
+  update-prod:
+    desc: "run the pipeline to rebuild prod"
+    cmds:
+      - task stop-prod
+      - task build-prod
+      - task start-prod-bg

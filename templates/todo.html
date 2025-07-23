@@ -9,7 +9,7 @@
     hx-swap="none" 
     hx-trigger="keyup delay:1s from:#{{$todoValueId}}, change from:#{{$todoCompletedId}}"
 
-    class="p-2 htmx-swipe-left group rounded-lg mb-3 bg-transparent flex justify-center items-center w-full"
+    class="p-2 htmx-swipe-left group rounded-lg mb-3 bg-transparent flex justify-center items-begin w-full"
 >
     <input name="id" type="hidden" value="{{.Todo.Id}}" />
     <input name="todolistid" type="hidden" value="{{.Todo.TodoListId}}" />
@@ -28,10 +28,9 @@
         class="w-8 h-8 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-full focus:outlint-none checked:bg-green-500 transition"
     />
 
-    <input 
+    <textarea
         id="{{$todoValueId}}"
         name="value"
-        value="{{.Todo.Value}}" 
         type="text" 
         placeholder="Enter Value Here..." 
         autocomplete="off"
@@ -46,8 +45,8 @@
         {{if .FocusInput}}autofocus{{end}}
         onkeydown="if (event.key === 'Enter') event.preventDefault();"
 
-        class="ml-3 min-w-0 flex-1 text-gray-50 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
-    />
+        class="field-sizing-content resize-none ml-3 min-w-0 max-w-80 flex-1 text-gray-50 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
+    >{{ .Todo.Value }}</textarea>
 
     <button 
         type="button"
@@ -56,7 +55,7 @@
         hx-target="#{{$todoId}}"
         hx-swap="outerHTML swap:0.3s"
 
-        class="ml-3 font-medium text-white bg-transparent rounded-lg lg:opacity-0 lg:group-hover:opacity-100 transition transform duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+        class="flex items-center justify-center ml-3 w-8 h-8 font-medium text-white bg-transparent rounded-full lg:opacity-0 lg:group-hover:opacity-100 transition transform duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
     >
         {{template "x-mark-icon" .}}
     </button>
