@@ -27,3 +27,26 @@ create table company (
 alter table person add column country varchar(2)
 --rollback ALTER TABLE person DROP COLUMN country;
 
+
+--changeset jonah:4 labels:init
+CREATE TABLE todo_list (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(127) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE todo (
+    id SERIAL PRIMARY KEY, 
+    completed BOOLEAN NOT NULL,
+    value TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    todo_list_id INT NOT NULL, 
+
+    FOREIGN KEY (todo_list_id) REFERENCES todo_list(id) ON DELETE CASCADE
+);
+--rollback DROP TABLE todo
+--rollback DROP TABLE todo_list
+
+--changeset jonah:5 labels:remove-tables
+DROP TABLE person;
+DROP TABLE company;

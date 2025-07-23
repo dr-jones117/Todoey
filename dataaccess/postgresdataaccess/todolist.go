@@ -15,8 +15,8 @@ func (da *PostgresTodoDataAccess) GetTodoLists() ([]models.TodoList, error) {
         SELECT
             tl.id, tl.title, tl.created_at,
             t.id, t.completed, t.value, t.created_at, t.todo_list_id
-        FROM todo_lists AS tl
-        LEFT JOIN todos AS t ON t.todo_list_id = tl.id;
+        FROM todo_list AS tl
+        LEFT JOIN todo AS t ON t.todo_list_id = tl.id;
     `)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get todo lists: %w", err)
@@ -98,7 +98,7 @@ func (da *PostgresTodoDataAccess) CreateTodoList(todoList models.TodoList) (mode
 
 	// Correct SQL with VALUES() and RETURNING
 	err := da.db.QueryRow(
-		`INSERT INTO todo_lists(title) VALUES($1) RETURNING id`,
+		`INSERT INTO todo_list(title) VALUES($1) RETURNING id`,
 		todoList.Title,
 	).Scan(&id)
 	if err != nil {
@@ -110,7 +110,7 @@ func (da *PostgresTodoDataAccess) CreateTodoList(todoList models.TodoList) (mode
 }
 
 func (da *PostgresTodoDataAccess) UpdateTodoList(todoListId uint, title string) error {
-	_, err := da.db.Exec(`UPDATE todo_lists SET title = $1 WHERE id = $2;`, title, todoListId)
+	_, err := da.db.Exec(`UPDATE todo_list SET title = $1 WHERE id = $2;`, title, todoListId)
 	if err != nil {
 		return fmt.Errorf("failed to update the todo list: %w", err)
 	}
@@ -118,7 +118,7 @@ func (da *PostgresTodoDataAccess) UpdateTodoList(todoListId uint, title string) 
 }
 
 func (da *PostgresTodoDataAccess) DeleteTodoList(id uint) error {
-	_, err := da.db.Exec(`DELETE FROM todo_lists WHERE id = $1;`, id)
+	_, err := da.db.Exec(`DELETE FROM todo_list WHERE id = $1;`, id)
 	if err != nil {
 		return fmt.Errorf("failed to delete the todolist: %w", err)
 	}
