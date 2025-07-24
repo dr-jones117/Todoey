@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -12,9 +13,13 @@ func AuthRequired() gin.HandlerFunc {
 		session := sessions.Default(c)
 		userId := session.Get("user_id")
 
+		log.Println("We have hit the auth function")
+		log.Println(userId)
+
 		if userId == nil {
+			log.Println("nil hit")
 			c.Header("HX-Redirect", "/login")
-			c.Status(http.StatusNoContent)
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 

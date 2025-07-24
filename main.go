@@ -40,7 +40,7 @@ func main() {
 
 	router := gin.New()
 
-	store := cookie.NewStore([]byte("secret-key-here"))
+	store := cookie.NewStore([]byte("secret-key-woieowmoijwef"))
 
 	router.Use(sessions.Sessions("mysession", store))
 	router.Use(gin.Logger())

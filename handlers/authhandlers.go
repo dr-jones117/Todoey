@@ -103,5 +103,6 @@ func Login(c *gin.Context) {
 	successMsg := fmt.Sprintf("The user %s successfully signed in", user.Username)
 	log.Println(successMsg)
 
+	c.Header("HX-Redirect", "/")
 	c.Status(http.StatusOK)
 }
