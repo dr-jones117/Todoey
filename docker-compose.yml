@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "60227:8080"
+      - "60227:60235"
     command: ./todo
     environment:
       - DB_HOST=db

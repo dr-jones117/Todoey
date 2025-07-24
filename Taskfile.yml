@@ -21,6 +21,11 @@ tasks:
     cmds:
       - ./tailwindcss -i css/input.css -o css/output.css --watch
 
+  css-minify:
+    desc: "tailwind watch build"
+    cmds:
+      - ./tailwindcss -i css/input.css -o css/output.css --minify
+
   build-prod:
     desc: "build the prod applicaiton"
     cmds:
