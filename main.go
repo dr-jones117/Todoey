@@ -1,13 +1,18 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"todo/dataaccess"
+	"todo/dataaccess/postgresdataaccess"
+	"todo/handlers"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
 )
 
 var (
-	port = "8080"
+	port = "60235"
 )
 
 type Dependencies struct {
@@ -15,7 +20,7 @@ type Dependencies struct {
 }
 
 func injectDependencies() Dependencies {
-	todoDataAccess := &dataaccess.PostgresTodoDataAccess{}
+	todoDataAccess := &postgresdataaccess.PostgresTodoDataAccess{}
 	if err := todoDataAccess.ConnectDataAccess(); err != nil {
 		log.Fatal(err.Error())
 	}
@@ -33,11 +38,18 @@ func main() {
 	dependencies := injectDependencies()
 	defer shutdownDependencies(dependencies)
 
-	router := gin.Default()
-	SetupHTTPHandlers(router, dependencies.dataAccess)
+	router := gin.New()
+
+	store := cookie.NewStore([]byte("secret-key-woieowmoijwef"))
+
+	router.Use(sessions.Sessions("mysession", store))
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
+	handlers.SetupHTTPHandlers(router, dependencies.dataAccess)
 
 	log.Println("Server listening on:", port)
-	err := router.Run(":" + port)
+	err := router.RunTLS(":"+port, "cert.pem", "key.pem")
 	if err != nil {
 		log.Fatal(err)
 	}

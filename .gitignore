@@ -2,3 +2,7 @@
 .task/
 tmp/
 todo
+liquibase-local.properties
+cert.pem
+key.pem
+liquibase.properties
