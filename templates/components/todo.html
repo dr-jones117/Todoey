@@ -25,7 +25,7 @@
         {{if .Todo.Completed}}checked{{end}}
         onchange="document.getElementById('{{$todoValueId}}').readOnly= this.checked"
 
-        class="w-8 h-8 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-full focus:outlint-none checked:bg-green-500 transition"
+        class="w-6 h-6 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-full focus:outlint-none checked:bg-green-500 transition"
     />
 
     <textarea
@@ -45,7 +45,7 @@
         {{if .FocusInput}}autofocus{{end}}
         onkeydown="if (event.key === 'Enter') event.preventDefault();"
 
-        class="placeholder:text-gray-500 dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-80 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
+        class="placeholder:text-gray-500 text-sm dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-120 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
     >{{ .Todo.Value }}</textarea>
 
     <button 
@@ -55,7 +55,7 @@
         hx-target="#{{$todoId}}"
         hx-swap="outerHTML swap:0.3s"
 
-        class="flex items-center justify-center ml-3 w-8 h-8 font-medium bg-transparent rounded-full lg:opacity-0 lg:group-hover:opacity-100 transition transform duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+        class="flex items-center justify-center ml-3 w-6 h-6 font-medium bg-transparent rounded-full lg:opacity-0 lg:group-hover:opacity-100 transition transform duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
     >
         {{template "x-mark-icon" .}}
     </button>

@@ -7,7 +7,7 @@
 {{define "todoList"}}
   <div 
     id="todoList-{{.Id}}"
-    class="htmx-zoom-out group/todolist dark:bg-gray-700 rounded px-5 py-5 my-5 mx-0 md:mx-3 max-w-screen shadow-lg rounded-lg"
+    class="htmx-zoom-out group/todolist dark:bg-gray-700 rounded px-5 py-5 my-1 md:my-4 mx-0 md:mx-3 max-w-screen shadow-lg rounded-lg"
   >
       <!-- Title Input Field -->
     <div class="flex justify-between p-2">
@@ -22,7 +22,7 @@
         hx-swap="innerHTML"
         hx-vals='{"id": {{.Id}}}'
 
-        class="placeholder:text-gray-500 min-w-0 px-2 py-1 text-xl font-bold border-0 focus:outline-none text-lg block"
+        class="placeholder:text-gray-500 min-w-0 px-2 py-1 text-sm font-bold border-0 focus:outline-none text-lg block"
       />
 
       {{template "delete-todolist-btn" .}}
@@ -31,7 +31,7 @@
       <!-- Todo List Container -->
       <div 
         id="todoList-container-{{.Id}}"
-        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-600 dark:via-gray-500 dark:to-gray-600 from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 rounded-lg mt-3 h-64"
+        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-600 dark:via-gray-500 dark:to-gray-600 from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 rounded-lg mt-3 h-57"
       >
         {{range .Todos}}
             {{template "todo" .}}
