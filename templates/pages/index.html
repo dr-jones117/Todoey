@@ -37,6 +37,14 @@
           (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
       );
     }
+
+    $(document).ready(function() {
+      $('#themeToggle').on('click', function() {
+        localStorage.theme = localStorage.theme === "dark" ? "light" : "dark"
+        updateTheme();
+      })
+    });
+
     updateTheme();
   </script>
 </head>
@@ -62,14 +70,5 @@
     {{template "create-todolist-btn" .}}
   </main>
 </body>
-<script>
-  $(document).ready(function() {
-    $('#themeToggle').on('click', function() {
-      localStorage.theme = localStorage.theme === "dark" ? "light" : "dark"
-      updateTheme();
-    })
-  });
-</script>
-
 </html>
 {{end}}
