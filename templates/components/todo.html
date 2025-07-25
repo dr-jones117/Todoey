@@ -45,7 +45,7 @@
         {{if .FocusInput}}autofocus{{end}}
         onkeydown="if (event.key === 'Enter') event.preventDefault();"
 
-        class="field-sizing-content resize-none ml-3 min-w-0 max-w-80 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
+        class="placeholder:text-gray-500 dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-80 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
     >{{ .Todo.Value }}</textarea>
 
     <button 

@@ -851,6 +851,12 @@
   .h-10 {
     height: calc(var(--spacing) * 10);
   }
+  .h-12 {
+    height: calc(var(--spacing) * 12);
+  }
+  .h-16 {
+    height: calc(var(--spacing) * 16);
+  }
   .h-24 {
     height: calc(var(--spacing) * 24);
   }
@@ -904,6 +910,12 @@
   }
   .w-8 {
     width: calc(var(--spacing) * 8);
+  }
+  .w-12 {
+    width: calc(var(--spacing) * 12);
+  }
+  .w-16 {
+    width: calc(var(--spacing) * 16);
   }
   .w-\[100px\] {
     width: 100px;
@@ -2342,6 +2354,12 @@
   .text-green-500 {
     color: var(--color-green-500);
   }
+  .text-indigo-600 {
+    color: var(--color-indigo-600);
+  }
+  .text-purple-800 {
+    color: var(--color-purple-800);
+  }
   .capitalize {
     text-transform: capitalize;
   }
@@ -2472,6 +2490,11 @@
   .placeholder-\[\#fbf0df\]\/40 {
     &::placeholder {
       color: color-mix(in oklab, #fbf0df 40%, transparent);
+    }
+  }
+  .placeholder-gray-400 {
+    &::placeholder {
+      color: var(--color-gray-400);
     }
   }
   .accent-auto {
@@ -2904,6 +2927,16 @@
       font-weight: var(--font-weight-medium);
     }
   }
+  .placeholder\:text-gray-400 {
+    &::placeholder {
+      color: var(--color-gray-400);
+    }
+  }
+  .placeholder\:text-gray-500 {
+    &::placeholder {
+      color: var(--color-gray-500);
+    }
+  }
   .checked\:bg-green-500 {
     &:checked {
       background-color: var(--color-green-500);
@@ -3275,6 +3308,27 @@
   .dark\:text-white {
     &:where(.dark, .dark *) {
       color: var(--color-white);
+    }
+  }
+  .dark\:placeholder-gray-500 {
+    &:where(.dark, .dark *) {
+      &::placeholder {
+        color: var(--color-gray-500);
+      }
+    }
+  }
+  .dark\:placeholder\:text-gray-100 {
+    &:where(.dark, .dark *) {
+      &::placeholder {
+        color: var(--color-gray-100);
+      }
+    }
+  }
+  .dark\:placeholder\:text-gray-300 {
+    &:where(.dark, .dark *) {
+      &::placeholder {
+        color: var(--color-gray-300);
+      }
     }
   }
   .dark\:focus\:border-blue-300 {
