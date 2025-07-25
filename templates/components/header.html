@@ -1,0 +1,76 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Todoey</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="description" content="This is a todo app" />
+  <meta name="keywords" content="todo app" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/output.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/htmx.css" />
+
+   <!-- HTMX -->
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+    integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+   <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
+    crossorigin="anonymous">
+  </script>
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    function updateTheme() {
+      $(document.documentElement).toggleClass(
+        "dark",
+        localStorage.theme === "dark" ||
+          (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
+      );
+
+      $('#dark-icon').toggleClass(
+        "hidden",
+        document.documentElement.classList.contains('dark')
+      );
+
+      $('#light-icon').toggleClass(
+        "hidden",
+        !document.documentElement.classList.contains('dark')
+      );
+    }
+
+    $(document).ready(function() {
+      $('#themeToggle').on('click', function() {
+        localStorage.theme = localStorage.theme === "dark" ? "light" : "dark"
+        updateTheme();
+      })
+      updateTheme();
+    });
+  </script>
+</head>
+
+<body>
+  <main class="relative v-screen min-h-screen flex flex-col items-center overflow-hidden bg-gradient-to-br text-gray-800 dark:text-white from-blue-50 via-indigo-50 to-purple-50  dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <header class="w-full py-5 mx-auto px-12 sticky top-0 shadow-lg flex justify-center">
+      <div class="container flex justify-between items-center">
+        <h1 class="text-5xl text-center font-bold">Todoey</h1>
+        <button id="themeToggle" class="w-8 h-8 flex justify-center items-center dark:rotate-90 shadow-lg rounded-lg transition duration-300 p-2">
+          <div id="dark-icon">
+            {{ template "moon-icon" .}}
+          </div>
+          <div id="light-icon">
+            {{ template "sun-icon" .}}
+          </div>
+        </button>
+      </div>
+    </header>
+{{end}}

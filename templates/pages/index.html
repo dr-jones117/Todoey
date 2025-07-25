@@ -1,62 +1,6 @@
 {{define "index"}}
-<!DOCTYPE html>
-<html lang="en">
+  {{template "header" .}}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Todoey</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-  <meta name="description" content="This is a todo app" />
-  <meta name="keywords" content="todo app" />
-
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/css/output.css" />
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/htmx.css" />
-
-   <!-- HTMX -->
-  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
-    integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
-    crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
-   <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
-    crossorigin="anonymous">
-  </script>
-  <script>
-    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-    function updateTheme() {
-      $(document.documentElement).toggleClass(
-        "dark",
-        localStorage.theme === "dark" ||
-          (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
-      );
-    }
-
-    $(document).ready(function() {
-      $('#themeToggle').on('click', function() {
-        localStorage.theme = localStorage.theme === "dark" ? "light" : "dark"
-        updateTheme();
-      })
-    });
-
-    updateTheme();
-  </script>
-</head>
-
-<body>
-  <main class="relative v-screen min-h-screen flex flex-col items-center overflow-hidden bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:transition-colors duration-300">
-    <header class="w-full py-5 mx-auto px-12 sticky top-0 shadow-lg flex">
-      <h1 class="text-5xl text-center font-bold">Todoey</h1>
-      <button id="themeToggle">
-        toggle theme here
-      </button>
-    </header>
     <section 
       id="todo-lists"
 
@@ -68,7 +12,6 @@
       {{template "loading-icon" .}}
     </section>
     {{template "create-todolist-btn" .}}
-  </main>
-</body>
-</html>
+
+    {{template "footer" .}}
 {{end}}
