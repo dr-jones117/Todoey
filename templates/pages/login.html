@@ -1,8 +1,8 @@
 {{define "login"}}
   {{ template "header" . }}
 
-    <section class="max-w-4xl p-6 my-auto mx-auto bg-white rounded-md shadow-md dark:bg-gray-800 justify-self-center align-self-center">
-        <h2 class="text-lg font-semibold text-gray-700 capitalize">Login</h2>
+    <section class="max-w-4xl p-6 my-auto mx-auto rounded-md shadow-md justify-self-center align-self-center  bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50  dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 ">
+        <h2 class="text-lg font-semibold capitalize">Login</h2>
         <form
           hx-post="/login"
           hx-trigger="keyup[event.code=='Enter']"
