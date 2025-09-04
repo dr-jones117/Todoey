@@ -107,3 +107,19 @@ func Login(c *gin.Context) {
 	c.Header("HX-Redirect", "/")
 	c.Status(http.StatusOK)
 }
+
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+
+	session.Options(sessions.Options{
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+	})
+
+	session.Save()
+
+	c.Header("HX-Redirect", "/login")
+	c.Status(http.StatusOK)
+}
