@@ -74,25 +74,26 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	userName := c.PostForm("userName")
 	if userName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a username"})
+		c.Data(http.StatusBadRequest, "text/html", []byte("Please provide a username"))
 		return
 	}
 	password := c.PostForm("password")
 	if password == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a password"})
+		c.Data(http.StatusBadRequest, "text/html", []byte("Please provide a password"))
 		return
 	}
 
 	user, err := todoDataAccess.GetUserByUsername(userName)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password was incorrect"})
+		c.Data(http.StatusBadRequest, "text/html", []byte("Username or password was incorrect"))
 		return
 	}
 
 	isValid := auth.VerifyPasswordWithSalt(password, user.PasswordSalt, user.PasswordHash)
 	if !isValid {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password was incorrect"})
+		log.Println("Couldn't verify the password for user", userName)
+		c.Data(http.StatusBadRequest, "text/html", []byte("Username or password was incorrect"))
 		return
 	}
 
