@@ -27,6 +27,7 @@
   <script src="
   https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.3/response-targets.min.js
   "></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
@@ -77,7 +78,7 @@
           >
             Logout
           </button>
-          <button id="themeToggle" class="w-9 h-9 flex justify-center items-center dark:rotate-90 shadow-lg rounded-lg transition duration-300 p-1">
+          <button id="themeToggle" class="w-9 h-9 flex justify-center items-center dark:rotate-90 rounded-lg transition duration-300 p-1">
             <div id="dark-icon">
               {{ template "moon-icon" .}}
             </div>
