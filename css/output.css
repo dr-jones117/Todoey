@@ -815,10 +815,6 @@
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
-  .size-3 {
-    width: calc(var(--spacing) * 3);
-    height: calc(var(--spacing) * 3);
-  }
   .size-3\.5 {
     width: calc(var(--spacing) * 3.5);
     height: calc(var(--spacing) * 3.5);
@@ -907,6 +903,9 @@
   }
   .w-9 {
     width: calc(var(--spacing) * 9);
+  }
+  .w-10 {
+    width: calc(var(--spacing) * 10);
   }
   .w-\[100px\] {
     width: 100px;
@@ -1401,9 +1400,6 @@
   }
   .justify-items-stretch {
     justify-items: stretch;
-  }
-  .gap-1 {
-    gap: calc(var(--spacing) * 1);
   }
   .gap-1\.5 {
     gap: calc(var(--spacing) * 1.5);

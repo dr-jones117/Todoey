@@ -2,6 +2,15 @@
     {{range .TodoLists}}
         {{template "todoList" .}}
     {{end}}
+
+    <script>
+      function afterSwapTodoListContainer(event) {
+        let container = event.target;
+        if(event.detail.requestConfig.headers['HX-Trigger'] === 'create-todo-btn') {
+          container.scrollTop = container.scrollHeight;
+        }
+      }
+    </script>
 {{end}}
 
 {{define "todoList"}}
@@ -32,24 +41,24 @@
       <div 
         id="todoList-container-{{.Id}}"
         class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-600 dark:via-gray-500 dark:to-gray-600 from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 rounded-lg mt-3 h-57"
+        hx-on::after-swap="afterSwapTodoListContainer(event)"
       >
         {{range .Todos}}
             {{template "todo" .}}
         {{end}}
       </div>
       {{template "create-todo-btn" .}}
-
   </div>
 {{end}}
 
 {{define "create-todo-btn"}}
     <button 
+      id="create-todo-btn"
       hx-post="/todos" 
       hx-target="#todoList-container-{{.Id}}" 
       hx-swap="beforeend transition:true" 
       hx-vals='{"todolistid": {{.Id}}}'
-
-      class="w-full p-2 mt-3 flex justify-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-full hover:bg-green-400 hover:scale-105"
+      class="w-10 p-2 mt-3 flex justify-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-full hover:bg-green-400 hover:scale-105"
     >
       {{template "plus-icon" .}}
     </button>
