@@ -6,3 +6,5 @@ liquibase-local.properties
 cert.pem
 key.pem
 liquibase.properties
+tailwindcss
+css/output.css
