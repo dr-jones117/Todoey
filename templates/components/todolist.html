@@ -2,7 +2,7 @@
     {{range .TodoLists}}
         {{template "todoList" .}}
     {{end}}
-
+    <div class="mt-20">&nbsp;</div>
     <script>
       function afterSwapTodoListContainer(event) {
         let container = event.target;
@@ -16,7 +16,7 @@
 {{define "todoList"}}
   <div 
     id="todoList-{{.Id}}"
-    class="htmx-zoom-out group/todolist dark:bg-gray-700 rounded px-5 py-5 my-1 md:my-4 mx-0 md:mx-3 max-w-screen shadow-lg rounded-lg"
+    class="htmx-zoom-out group/todolist md:dark:bg-gray-700 rounded md:px-5 py-5 my-3 md:my-4 mx-0 md:mx-3 max-w-screen md:shadow-lg rounded-lg w-full md:w-auto"
   >
       <!-- Title Input Field -->
     <div class="flex justify-between p-2">
@@ -31,7 +31,7 @@
         hx-swap="innerHTML"
         hx-vals='{"id": {{.Id}}}'
 
-        class="placeholder:text-gray-500 min-w-0 px-2 py-1 text-sm font-bold border-0 focus:outline-none text-lg block"
+        class="placeholder:text-gray-500 p-0 md:px-2 py-1 text-sm font-bold border-0 focus:outline-none text-lg block"
       />
 
       {{template "delete-todolist-btn" .}}
@@ -40,7 +40,7 @@
       <!-- Todo List Container -->
       <div 
         id="todoList-container-{{.Id}}"
-        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 rounded-lg mt-3 h-57"
+        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 w-screen md:w-auto from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 md:rounded-lg mt-3 h-57"
         hx-on::after-swap="afterSwapTodoListContainer(event)"
       >
         {{range .Todos}}
@@ -58,9 +58,9 @@
       hx-target="#todoList-container-{{.Id}}" 
       hx-swap="beforeend transition:true" 
       hx-vals='{"todolistid": {{.Id}}}'
-      class="w-10 p-2 mt-3 flex justify-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
+      class="p-2 mt-3 ml-3 text-xs md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
     >
-      {{template "plus-icon" .}}
+      {{template "plus-icon" .}} Add Todo
     </button>
 {{end}}
 

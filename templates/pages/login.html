@@ -4,11 +4,6 @@
     <section class="max-w-4xl p-6 my-auto mx-auto rounded-md shadow-md justify-self-center align-self-center  bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50  dark:from-slate-700 dark:via-gray-800 dark:to-slate-700 ">
         <h2 class="text-lg font-semibold capitalize">Login</h2>
         <form
-          hx-post="/login"
-          hx-trigger="keyup[event.code=='Enter']"
-          hx-target-400="#login-error"
-          hx-swap="innerHTML"
-          hx-ext="response-targets"
           class="mt-3"
         >
             <div class="flex flex-col">
@@ -20,6 +15,15 @@
                     <label class="text-gray-700 dark:text-gray-200" for="password">Password</label>
                     <input id="password" name="password" type="password" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                 </div>
+                <button 
+                  hx-post="/login"
+                  hx-target-400="#login-error"
+                  hx-swap="innerHTML"
+                  hx-ext="response-targets"
+                  class="px-2 py-2 mt-3 font-medium transition duration-300 transform bg-green-500 rounded-lg hover:bg-green-400 hover:scale-105"
+                >
+                  Login
+                </button>
                 <div id="login-error" class="mt-2 text-sm text-red-500">
                 </div>
             </div>
