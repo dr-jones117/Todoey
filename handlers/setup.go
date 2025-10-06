@@ -23,6 +23,9 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	router.LoadHTMLGlob("templates/**/*.html")
 
 	//Public Static Files
+	router.GET("/favicon.ico", func(c *gin.Context) {
+		c.File("favicon.ico")
+	})
 	router.Static("/css", "./css")
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index", nil)

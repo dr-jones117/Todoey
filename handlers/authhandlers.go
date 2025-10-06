@@ -85,6 +85,7 @@ func Login(c *gin.Context) {
 
 	user, err := todoDataAccess.GetUserByUsername(userName)
 	if err != nil {
+		// problem here is the the error could be from either not being able to run the query or the query doesn't return results. return 500 for fist and a 400 for the second
 		log.Println(err.Error())
 		c.Data(http.StatusBadRequest, "text/html", []byte("Username or password was incorrect"))
 		return
@@ -99,7 +100,9 @@ func Login(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set("user_id", user.Id)
-	session.Save()
+	if err := session.Save(); err != nil {
+		log.Println("Session save error:", err)
+	}
 
 	successMsg := fmt.Sprintf("The user %s successfully signed in", user.Username)
 	log.Println(successMsg)

@@ -40,16 +40,21 @@ func main() {
 
 	router := gin.New()
 
-	store := cookie.NewStore([]byte("secret-key-woieowmoijwef"))
+	store := cookie.NewStore([]byte("secret-key-23l4lkjlkj"))
+	store.Options(sessions.Options{
+		Path:     "/",
+		Secure:   false,
+		HttpOnly: true,
+	})
 
-	router.Use(sessions.Sessions("mysession", store))
+	router.Use(sessions.Sessions("todoey-session", store))
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
 	handlers.SetupHTTPHandlers(router, dependencies.dataAccess)
 
 	log.Println("Server listening on:", port)
-	err := router.RunTLS(":"+port, "cert.pem", "key.pem")
+	err := router.Run(":" + port)
 	if err != nil {
 		log.Fatal(err)
 	}

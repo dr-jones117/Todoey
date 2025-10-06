@@ -16,8 +16,7 @@ WORKDIR /app
 COPY --from=builder /app/todo .
 COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/css /app/css
-COPY --from=builder /app/key.pem .
-COPY --from=builder /app/cert.pem .
+COPY --from=builder /app/favicon.ico /app/favicon.ico
 
 
 EXPOSE 60227
