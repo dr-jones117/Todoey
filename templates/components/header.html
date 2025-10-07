@@ -72,12 +72,14 @@
       <div class="container flex justify-between items-center">
         <h1 class="text-3xl text-center font-bold">Todoey</h1>
         <div class="flex flex-row gap-4">
+        {{ if .showLogoutButton}}
           <button 
             hx-post="/logout"
             class="text-sm md:text-lg justify-self-end"
           >
             Logout
           </button>
+        {{ end }}
           <button id="themeToggle" class="w-9 h-9 flex justify-center items-center dark:rotate-90 rounded-lg transition duration-300 p-1">
             <div id="dark-icon">
               {{ template "moon-icon" .}}

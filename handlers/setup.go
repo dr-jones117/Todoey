@@ -28,7 +28,9 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	})
 	router.Static("/css", "./css")
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index", nil)
+		c.HTML(http.StatusOK, "index", gin.H{
+			"showLogoutButton": true,
+		})
 	})
 
 	// Auth
@@ -36,7 +38,9 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	router.POST("/login", Login)
 	router.POST("/logout", Logout)
 	router.GET("/login", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "login", nil)
+		c.HTML(http.StatusOK, "login", gin.H{
+			"showLogoutButton": false,
+		})
 	})
 
 	authorized := router.Group("/")
