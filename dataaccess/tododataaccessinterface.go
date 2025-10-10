@@ -19,6 +19,7 @@ type TodoDataAccess interface {
 	DeleteTodoList(id uint) error
 
 	// Todo
+	GetTodos(status string) ([]models.Todo, error)
 	CreateTodo(todo models.Todo) (models.Todo, error)
 	UpdateTodo(todo models.Todo) (models.Todo, error)
 	DeleteTodo(id uint) error

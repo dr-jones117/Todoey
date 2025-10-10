@@ -1,0 +1,30 @@
+{{define "todos"}}
+<div class="flex flex-col container">
+  {{range .todos}}
+      {{template "completedTodo" .}}
+  {{end}}
+</div>
+{{end}}
+
+{{define "completedTodo"}}
+<div class="mt-3 p-2 rounded-lg md:dark:bg-gray-700 overflow-hidden">
+  <div class="flex items-center mt-3">
+    <button 
+      id="create-todo-btn"
+      hx-post="/todos" 
+      hx-target="#todoList-container-{{.Id}}" 
+      hx-swap="beforeend transition:true" 
+      hx-vals='{"todolistid": {{.Id}}}'
+      class="p-2 ml-3 text-xs md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
+    >
+      Restore
+    </button>
+    <div class="ml-3">
+      Completed at: 
+    </div>
+  </div>
+  <div class="mt-3">
+  {{.Value}}
+  </div>
+</div>
+{{end}}

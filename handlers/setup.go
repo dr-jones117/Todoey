@@ -33,6 +33,12 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 		})
 	})
 
+	router.GET("/history", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "history", gin.H{
+			"showLogoutButton": true,
+		})
+	})
+
 	// Auth
 	// router.POST("/register", Register)
 	router.POST("/login", Login)
@@ -55,6 +61,7 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 
 		// Todos
 		todosEndpoint := "/todos"
+		authorized.GET(todosEndpoint, getTodos)
 		authorized.POST(todosEndpoint, createTodo)
 		authorized.PUT(todosEndpoint, updateTodo)
 		authorized.DELETE(todosEndpoint, deleteTodo)

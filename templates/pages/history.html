@@ -1,0 +1,10 @@
+{{define "history"}}
+  {{template "header" .}}
+    <div
+      hx-trigger="load"
+      hx-get="todos?status=completed"
+      hx-swap="innerHTML"
+    >
+    </div>
+  {{template "footer" .}}
+{{end}}

@@ -9,6 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func getTodos(c *gin.Context) {
+	status := c.Query("status")
+	todos, err := todoDataAccess.GetTodos(status)
+
+	if err != nil {
+		writeInternalServerError(c.Writer, err.Error())
+		return
+	}
+
+	c.HTML(http.StatusOK, "todos", gin.H{
+		"todos": todos,
+	})
+}
+
 func createTodo(c *gin.Context) {
 	var todo models.Todo
 	var err error
