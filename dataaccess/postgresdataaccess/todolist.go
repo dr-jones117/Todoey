@@ -54,7 +54,7 @@ func (da *PostgresTodoDataAccess) GetTodoLists() ([]models.TodoList, error) {
 			}
 		}
 
-		if uint(tId.Int32) != 0 {
+		if uint(tId.Int32) != 0 && tCompleted.Bool == false {
 			todo := models.Todo{
 				Id:         uint(tId.Int32),
 				Completed:  tCompleted.Bool,

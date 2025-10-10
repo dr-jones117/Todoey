@@ -4,7 +4,45 @@
       hx-trigger="load"
       hx-get="todos?status=completed"
       hx-swap="innerHTML"
+      class="flex flex-col container text-xs overflow-auto md:text-lg no-scrollbar"
     >
     </div>
   {{template "footer" .}}
+{{end}}
+
+{{define "todos"}}
+  {{range .todos}}
+      {{template "completedTodo" .}}
+  {{end}}
+{{end}}
+
+{{define "completedTodo"}}
+<form
+  class="mt-3 p-2 rounded-lg md:dark:bg-gray-700 max-w-screen"
+  hx-put="/todos" 
+  hx-trigger="click from:#restore-button-{{.Id}}"
+>
+  <input name="id" type="hidden" value="{{.Id}}" />
+  <input name="todolistid" type="hidden" value="{{.TodoListId}}" />
+  <input name="value" type="hidden" value="{{.Value}}" />
+  <input name="completed" type="hidden" value="false" />
+
+  <div class="flex items-center mt-3">
+    <button 
+      id="restore-button-{{.Id}}"
+      class="p-2 ml-3 md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
+    >
+      Restore
+    </button>
+    <div class="ml-3">
+      List Name: 
+    </div>
+    <div class="ml-3">
+      Completed at: 
+    </div>
+  </div>
+  <div class="mt-3">
+  {{.Value}}
+  </div>
+</form>
 {{end}}
