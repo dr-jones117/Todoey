@@ -3,6 +3,8 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"todo/dataaccess"
 
 	"github.com/gin-gonic/gin"
@@ -17,16 +19,41 @@ func writeInternalServerError(w http.ResponseWriter, msg string) {
 	log.Println(msg)
 }
 
+func getTemplateFileList(root string) ([]string, error) {
+	var files []string
+	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !d.IsDir() && filepath.Ext(path) == ".html" {
+			files = append(files, path)
+		}
+
+		return nil
+	})
+
+	return files, err
+}
+
 func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 	todoDataAccess = tda
 
-	router.LoadHTMLGlob("templates/**/*.html")
+	// router.LoadHTMLGlob("templates/**/*.html")
+	templateFilePaths, err := getTemplateFileList("templates")
+	if err != nil {
+		log.Fatalf("Error loading templates: %v", err)
+	}
+
+	router.LoadHTMLFiles(templateFilePaths...)
 
 	//Public Static Files
 	router.GET("/favicon.ico", func(c *gin.Context) {
 		c.File("favicon.ico")
 	})
+
 	router.Static("/css", "./css")
+
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index", gin.H{
 			"showLogoutButton": true,
