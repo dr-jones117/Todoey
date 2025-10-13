@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strconv"
+	"time"
 	"todo/models"
 	"todo/templates"
 
@@ -10,8 +12,7 @@ import (
 )
 
 func getTodos(c *gin.Context) {
-	status := c.Query("status")
-	todos, err := todoDataAccess.GetTodos(status)
+	todos, err := todoDataAccess.GetTodos(models.TodoNoApplyCompleted)
 
 	if err != nil {
 		writeInternalServerError(c.Writer, err.Error())
@@ -19,6 +20,29 @@ func getTodos(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "todos", gin.H{
+		"todos": todos,
+	})
+}
+
+func getHistoricalTodos(c *gin.Context) {
+	todos, err := todoDataAccess.GetTodos(models.TodoCompleted)
+
+	if err != nil {
+		writeInternalServerError(c.Writer, err.Error())
+		return
+	}
+
+	for i, todo := range todos {
+		formattedTime := todo.CompletedAt.Local().Format("03:04:05 PM 01:02:2006")
+
+		if todo.CompletedAt.IsZero() {
+			formattedTime = "N/A"
+		}
+
+		todos[i].CompletedAtFormatted = formattedTime
+	}
+
+	c.HTML(http.StatusOK, "historical-todos", gin.H{
 		"todos": todos,
 	})
 }
@@ -62,11 +86,23 @@ func updateTodo(c *gin.Context) {
 		return
 	}
 
+	originalTodo, err := todoDataAccess.GetTodoById(todo.Id)
+	if err != nil {
+		writeBadRequestError(c.Writer, "Unable to find todo with that id", err.Error())
+		return
+	}
+
+	if todo.Completed && !originalTodo.Completed {
+		todo.CompletedAt = time.Now().UTC()
+	}
+
 	todo, err = todoDataAccess.UpdateTodo(todo)
 	if err != nil {
 		writeInternalServerError(c.Writer, err.Error())
 		return
 	}
+
+	log.Println(todo)
 
 	c.HTML(http.StatusOK, "todo", todo)
 }

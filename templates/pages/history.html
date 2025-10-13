@@ -2,7 +2,7 @@
   {{template "header" .}}
     <div
       hx-trigger="load"
-      hx-get="todos?status=completed"
+      hx-get="historical-todos"
       hx-swap="innerHTML"
       class="flex flex-col container text-xs overflow-auto md:text-lg no-scrollbar"
     >
@@ -10,9 +10,4 @@
   {{template "footer" .}}
 {{end}}
 
-{{define "todos"}}
-  {{range .todos}}
-      {{template "completedTodo" .}}
-  {{end}}
-{{end}}
 

@@ -66,3 +66,8 @@ CREATE TABLE "user" (
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 --rollback DROP TABLE user
+
+--changeset jonah:7 labels:todo-completed-at
+ALTER TABLE todo
+ADD COLUMN completed_at TIMESTAMP NULL;
+--rollback ALTER TABLE todo DROP COLUMN completed_at

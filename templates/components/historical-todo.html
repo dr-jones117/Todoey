@@ -1,0 +1,39 @@
+{{define "historical-todo"}}
+<form
+  class="mt-3 p-3 rounded-lg md:dark:bg-gray-700 max-w-screen dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 bg-gradient-to-bl from-blue-100 via-indigo-100 to-purple-100 "
+  hx-put="/todos" 
+  hx-trigger="confirmed from:#restore-button-{{.Id}}"
+>
+  <input name="id" type="hidden" value="{{.Id}}" />
+  <input name="todolistid" type="hidden" value="{{.TodoListId}}" />
+  <input name="value" type="hidden" value="{{.Value}}" />
+  <input name="completed" type="hidden" value="false" />
+
+  <div class="flex items-center justify-between">
+    From {{.TodoListTitle}} at {{.CompletedAtFormatted }}
+    <button 
+      id="restore-button-{{.Id}}"
+      class="justify-self-end p-2 ml-3 md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
+      type="button"
+      onClick="
+        Swal.fire({
+          title: 'Restore Todo Item', 
+          text:'Are you sure you want to restore this todo item?', 
+          confirmButtonColor: '#fb2c38',
+          confirmButtonText: 'Yes',
+          showCancelButton: true,
+          cancelButtonColor: '#00c84e'
+        }).then((result)=>{
+            if(result.isConfirmed){
+              htmx.trigger(this, 'confirmed');  
+            } 
+        })"
+    >
+      Restore
+    </button>
+  </div>
+  <div class="mt-3">
+  {{.Value}}
+  </div>
+</form>
+{{end}}

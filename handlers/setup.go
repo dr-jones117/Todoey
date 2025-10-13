@@ -19,6 +19,11 @@ func writeInternalServerError(w http.ResponseWriter, msg string) {
 	log.Println(msg)
 }
 
+func writeBadRequestError(w http.ResponseWriter, msg string, errorMessage string) {
+	http.Error(w, msg, http.StatusBadRequest)
+	log.Println(errorMessage)
+}
+
 func getTemplateFileList(root string) ([]string, error) {
 	var files []string
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
@@ -92,5 +97,7 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 		authorized.POST(todosEndpoint, createTodo)
 		authorized.PUT(todosEndpoint, updateTodo)
 		authorized.DELETE(todosEndpoint, deleteTodo)
+
+		authorized.GET("/historical-todos", getHistoricalTodos)
 	}
 }
