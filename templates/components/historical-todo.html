@@ -1,19 +1,20 @@
 {{define "historical-todo"}}
 <form
-  class="mt-3 p-3 rounded-lg md:dark:bg-gray-700 max-w-screen dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 bg-gradient-to-bl from-blue-100 via-indigo-100 to-purple-100 "
+  class="htmx-swipe-left mt-3 p-3 text-xs md:text-sm rounded-lg md:dark:bg-gray-700 max-w-screen dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 bg-gradient-to-bl from-blue-100 via-indigo-100 to-purple-100 "
   hx-put="/todos" 
   hx-trigger="confirmed from:#restore-button-{{.Id}}"
+  hx-swap="outerHTML swap:0.3s"
 >
   <input name="id" type="hidden" value="{{.Id}}" />
   <input name="todolistid" type="hidden" value="{{.TodoListId}}" />
   <input name="value" type="hidden" value="{{.Value}}" />
   <input name="completed" type="hidden" value="false" />
 
-  <div class="flex items-center justify-between">
-    From {{.TodoListTitle}} at {{.CompletedAtFormatted }}
+  <div class="flex items-center">
+    <b>{{.TodoListTitle}}</b>: {{.CompletedAtFormatted }}
     <button 
       id="restore-button-{{.Id}}"
-      class="justify-self-end p-2 ml-3 md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
+      class="p-2 ml-auto flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
       type="button"
       onClick="
         Swal.fire({
