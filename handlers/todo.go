@@ -47,6 +47,16 @@ func getHistoricalTodos(c *gin.Context) {
 	})
 }
 
+func deleteHistoricalTodos(c *gin.Context) {
+	err := todoDataAccess.DeleteHistoricalTodos()
+	if err != nil {
+		writeInternalServerError(c.Writer, err.Error())
+		c.Data(http.StatusBadRequest, "text/html", []byte("Unable to clear your history at this time. Try again later."))
+		return
+	}
+	c.Data(http.StatusOK, "text/html", []byte("Successfully cleared your task history!"))
+}
+
 func createTodo(c *gin.Context) {
 	var todo models.Todo
 	var err error
@@ -75,8 +85,7 @@ func createTodo(c *gin.Context) {
 		return
 	}
 
-	todoTemplateData.Todo = todo
-	c.HTML(http.StatusOK, "todo", todoTemplateData)
+	c.HTML(http.StatusOK, "todo", todo)
 }
 
 func updateTodo(c *gin.Context) {

@@ -1,8 +1,8 @@
 {{define "todoLists"}}
-    {{range .TodoLists}}
+    {{range .}}
         {{template "todoList" .}}
     {{end}}
-    <div class="mt-20">&nbsp;</div>
+    {{template "spacer" .}}
     <script>
       function afterSwapTodoListContainer(event) {
         let container = event.target;

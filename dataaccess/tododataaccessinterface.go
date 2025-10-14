@@ -24,4 +24,6 @@ type TodoDataAccess interface {
 	CreateTodo(todo models.Todo) (models.Todo, error)
 	UpdateTodo(todo models.Todo) (models.Todo, error)
 	DeleteTodo(id uint) error
+
+	DeleteHistoricalTodos() error
 }

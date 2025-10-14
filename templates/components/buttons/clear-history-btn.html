@@ -1,0 +1,28 @@
+{{define "clear-history-btn"}}
+  <button 
+    id="clear-history-button"
+
+    hx-trigger="confirmed"
+    hx-delete="/historical-todos" 
+    hx-target="#history-container"
+    hx-target-400="#clear-history-error"
+
+    class="w-32 p-2 mt-4 text-xs flex mx-auto justify-center items-center font-medium tracking-wide transition duration-300 transform bg-orange-500 rounded-md hover:bg-orange-400 hover:scale-105"
+    onClick="
+      Swal.fire({
+        title: 'Clear History', 
+        text:'Are you sure you want to clear your task history?', 
+        confirmButtonColor: '#fb2c38',
+        confirmButtonText: 'Yes',
+        showCancelButton: true,
+        cancelButtonColor: '#00c84e'
+      }).then((result)=>{
+          if(result.isConfirmed){
+            htmx.trigger(this, 'confirmed');  
+          }
+      })"
+  >
+    Clear History
+  </button>
+{{end}}
+

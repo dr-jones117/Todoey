@@ -1,18 +1,18 @@
 {{define "todo"}}
-{{$todoId := printf "todo-%d" .Todo.Id}}
+{{$todoId := printf "todo-%d" .Id}}
 {{$todoValueId := printf "%s-value" $todoId}}
 {{$todoCompletedId := printf "%s-completed" $todoId}}
 <form 
-    id="{{$todoId}}"
+    id="todo-{{$.Id}}"
 
     hx-put="/todos" 
-    hx-swap="none" 
+    hx-swap="outerHTML"
     hx-trigger="keyup delay:1s from:#{{$todoValueId}}, change from:#{{$todoCompletedId}}"
 
-    class="p-2 htmx-swipe-left group rounded-lg mb-3 bg-transparent flex justify-center items-begin w-full"
+    class="p-2 group rounded-lg mb-3 bg-transparent flex justify-center items-begin w-full"
 >
-    <input name="id" type="hidden" value="{{.Todo.Id}}" />
-    <input name="todolistid" type="hidden" value="{{.Todo.TodoListId}}" />
+    <input name="id" type="hidden" value="{{.Id}}" />
+    <input name="todolistid" type="hidden" value="{{.TodoListId}}" />
 
     <input 
         id="{{$todoCompletedId}}"
@@ -22,7 +22,7 @@
 
         hx-trigger="change"
 
-        {{if .Todo.Completed}}checked{{end}}
+        {{if .Completed}}checked{{end}}
         onchange="document.getElementById('{{$todoValueId}}').readOnly= this.checked"
 
         class="w-6 h-6 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-full focus:outlint-none checked:bg-green-500 transition"
@@ -35,27 +35,30 @@
         placeholder="Enter Value Here..." 
         autocomplete="off"
 
+
+        {{if .Completed}}readonly{{end}}
+
         hx-post="/todos?setFocus=true"
         hx-trigger="keyup[event.code=='Enter']"
         hx-target="#{{$todoId}}"
         hx-swap="afterend"
-        hx-vals='{"value": ""}'
+        hx-vals='{"value": "{{$.Value}}"}'
 
-        {{if .Todo.Completed}}readonly{{end}}
-        {{if .FocusInput}}autofocus{{end}}
         onkeydown="if (event.key === 'Enter') event.preventDefault();"
 
         class="placeholder:text-gray-500 text-sm dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-120 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
-    >{{ .Todo.Value }}</textarea>
+    >{{ .Value }}</textarea>
 
     <button 
         type="button"
 
-        hx-delete="/todos?id={{.Todo.Id}}"
-        hx-target="#{{$todoId}}"
-        hx-swap="outerHTML swap:0.3s"
+        {{if .Completed}}disabled{{end}}
 
-        class="flex items-center justify-center ml-3 w-6 h-6 font-medium bg-transparent rounded-full lg:opacity-0 lg:group-hover:opacity-100 transition transform duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+        hx-delete="/todos?id={{.Id}}"
+        hx-target="#{{$todoId}}"
+        hx-swap="outerHTML"
+
+        class="flex items-center justify-center ml-3 w-6 h-6 font-medium bg-transparent rounded-full lg:opacity-0 lg:group-hover:opacity-100 duration-200 ease-in-out hover:scale-120 hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80 disabled:hidden"
     >
         {{template "x-mark-icon" .}}
     </button>

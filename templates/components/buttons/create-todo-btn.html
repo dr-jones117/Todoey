@@ -3,7 +3,7 @@
       id="create-todo-btn"
       hx-post="/todos" 
       hx-target="#todoList-container-{{.Id}}" 
-      hx-swap="beforeend transition:true" 
+      hx-swap="beforeend" 
       hx-vals='{"todolistid": {{.Id}}}'
       class="p-2 mt-3 ml-3 text-xs md:ml-0 flex justify-center items-center font-medium tracking-wide transition duration-300 transform bg-green-500 rounded-md hover:bg-green-400 hover:scale-105"
     >

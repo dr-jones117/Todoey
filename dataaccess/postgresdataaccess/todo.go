@@ -138,3 +138,11 @@ func (da *PostgresTodoDataAccess) DeleteTodo(id uint) error {
 	}
 	return nil
 }
+
+func (da *PostgresTodoDataAccess) DeleteHistoricalTodos() error {
+	_, err := da.db.Exec(`DELETE FROM todo WHERE completed = true;`)
+	if err != nil {
+		return err
+	}
+	return nil
+}

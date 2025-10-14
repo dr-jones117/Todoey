@@ -4,6 +4,9 @@
         {{range .todos}}
             {{template "historical-todo" .}}
         {{end}}
+        {{template "clear-history-btn" .}}
+        <div id="clear-history-error" class="mt-2 text-sm text-center text-red-500"></div>
+        {{template "spacer" .}}
     {{else}}
         <div class="p-4 text-center">
             No tasks have been completed yet! :(

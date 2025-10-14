@@ -15,7 +15,7 @@ func getTodoLists(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "todoLists", MapTodoListsTemplate(todoLists))
+	c.HTML(http.StatusOK, "todoLists", todoLists)
 }
 
 func createTodoList(c *gin.Context) {
@@ -26,7 +26,7 @@ func createTodoList(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "todoList", MapTodoListTemplate(todoList))
+	c.HTML(http.StatusOK, "todoList", todoList)
 }
 
 func updateTodoList(c *gin.Context) {

@@ -1,6 +1,6 @@
 {{define "historical-todo"}}
 <form
-  class="htmx-swipe-left mt-3 p-3 text-xs md:text-sm rounded-lg md:dark:bg-gray-700 max-w-screen dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 bg-gradient-to-bl from-blue-100 via-indigo-100 to-purple-100 "
+  class="htmx-swipe-left text-left mt-3 p-3 text-xs md:text-sm rounded-lg md:dark:bg-gray-700 max-w-screen dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 bg-gradient-to-bl from-blue-100 via-indigo-100 to-purple-100 "
   hx-put="/todos" 
   hx-trigger="confirmed from:#restore-button-{{.Id}}"
   hx-swap="outerHTML swap:0.3s"
