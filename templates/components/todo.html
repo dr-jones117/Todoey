@@ -38,8 +38,9 @@
 
 
           {{if .Completed}}readonly{{end}}
+          {{if .FocusInput}} autofocus {{end}}
 
-          hx-post="/todos?setFocus=true"
+          hx-post="/todos"
           hx-trigger="keyup[event.code=='Enter']"
           hx-target="#{{$todoId}}"
           hx-swap="afterend"

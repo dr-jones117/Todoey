@@ -21,4 +21,6 @@ type Todo struct {
 	CreatedAt            time.Time `json:"createdAt"`
 	CompletedAt          time.Time `json:"completedAt"`
 	CompletedAtFormatted string    `json:"completedAtFormatted"`
+
+	FocusInput bool
 }

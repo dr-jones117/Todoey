@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 	"todo/models"
-	"todo/templates"
 
 	"github.com/gin-gonic/gin"
 )
@@ -89,7 +88,6 @@ func restoreTodo(c *gin.Context) {
 func createTodo(c *gin.Context) {
 	var todo models.Todo
 	var err error
-	var todoTemplateData templates.TodoTemplateData
 
 	strTodoListId := c.PostForm("todolistid")
 	if strTodoListId == "" {
@@ -102,11 +100,6 @@ func createTodo(c *gin.Context) {
 		writeInternalServerError(c.Writer, "invalid todo list id")
 	}
 
-	setFocus := c.Query("setFocus")
-	if setFocus != "" {
-		todoTemplateData.FocusInput = true
-	}
-
 	todo.TodoListId = uint(todoListId)
 	todo, err = todoDataAccess.CreateTodo(todo)
 	if err != nil {
@@ -114,6 +107,7 @@ func createTodo(c *gin.Context) {
 		return
 	}
 
+	todo.FocusInput = true
 	c.HTML(http.StatusOK, "todo", todo)
 }
 
