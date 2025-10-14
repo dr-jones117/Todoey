@@ -40,7 +40,7 @@
       <!-- Todo List Container -->
       <div 
         id="todoList-container-{{.Id}}"
-        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 w-screen md:w-auto from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 md:rounded-lg mt-3 h-57"
+        class="overflow-auto no-scrollbar bg-gradient-to-bl dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 from-blue-100 via-indigo-100 to-purple-100  dark:bg-gray-600 md:rounded-lg mt-3 h-57"
         hx-on::after-swap="afterSwapTodoListContainer(event)"
       >
         {{range .Todos}}
