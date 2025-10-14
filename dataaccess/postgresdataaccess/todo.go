@@ -131,6 +131,7 @@ func (da *PostgresTodoDataAccess) UpdateTodo(todo models.Todo) (models.Todo, err
 
 	return todo, nil
 }
+
 func (da *PostgresTodoDataAccess) DeleteTodo(id uint) error {
 	_, err := da.db.Exec(`DELETE FROM todo WHERE id = $1;`, id)
 	if err != nil {

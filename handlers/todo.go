@@ -33,7 +33,7 @@ func getHistoricalTodos(c *gin.Context) {
 	}
 
 	for i, todo := range todos {
-		formattedTime := todo.CompletedAt.Local().Format("03:04:05 PM 01:02:2006")
+		formattedTime := todo.CompletedAt.Local().Format("03:04:05 PM 01/02/2006")
 
 		if todo.CompletedAt.IsZero() {
 			formattedTime = "N/A"
@@ -49,11 +49,13 @@ func getHistoricalTodos(c *gin.Context) {
 
 func deleteHistoricalTodos(c *gin.Context) {
 	err := todoDataAccess.DeleteHistoricalTodos()
+
 	if err != nil {
 		writeInternalServerError(c.Writer, err.Error())
 		c.Data(http.StatusBadRequest, "text/html", []byte("Unable to clear your history at this time. Try again later."))
 		return
 	}
+
 	c.Data(http.StatusOK, "text/html", []byte("Successfully cleared your task history!"))
 }
 
