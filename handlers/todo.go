@@ -59,6 +59,33 @@ func deleteHistoricalTodos(c *gin.Context) {
 	c.Data(http.StatusOK, "text/html", []byte("Successfully cleared your task history!"))
 }
 
+func restoreTodo(c *gin.Context) {
+	todoId := c.Query("id")
+	if todoId == "" {
+		writeBadRequestError(c.Writer, "No id provided", "")
+		return
+	}
+
+	id, err := strconv.Atoi(todoId)
+	if err != nil {
+		writeBadRequestError(c.Writer, "Invalid Id", err.Error())
+		return
+	}
+
+	originalTodo, err := todoDataAccess.GetTodoById(uint(id))
+	if err != nil {
+		writeBadRequestError(c.Writer, "Unable to find todo with that id", err.Error())
+		return
+	}
+
+	originalTodo.Completed = false
+	_, err = todoDataAccess.UpdateTodo(originalTodo)
+	if err != nil {
+		writeInternalServerError(c.Writer, err.Error())
+		return
+	}
+}
+
 func createTodo(c *gin.Context) {
 	var todo models.Todo
 	var err error

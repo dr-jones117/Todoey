@@ -14,40 +14,42 @@
     <input name="id" type="hidden" value="{{.Id}}" />
     <input name="todolistid" type="hidden" value="{{.TodoListId}}" />
 
-    <input 
-        id="{{$todoCompletedId}}"
-        name="completed"
-        value="true"
-        type="checkbox"
+    <div class="flex mr-auto w-full">
+      <input 
+          id="{{$todoCompletedId}}"
+          name="completed"
+          value="true"
+          type="checkbox"
 
-        hx-trigger="change"
+          hx-trigger="change"
 
-        {{if .Completed}}checked{{end}}
-        onchange="document.getElementById('{{$todoValueId}}').readOnly= this.checked"
+          {{if .Completed}}checked{{end}}
+          onchange="document.getElementById('{{$todoValueId}}').readOnly= this.checked"
 
-        class="w-6 h-6 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-lg focus:outlint-none checked:bg-green-500 transition"
-    />
+          class="w-6 h-6 text-green-500 border-3 appearance-none outline-none cursor-pointer rounded-lg focus:outlint-none checked:bg-green-500 transition"
+      />
 
-    <textarea
-        id="{{$todoValueId}}"
-        name="value"
-        type="text" 
-        placeholder="Enter Value Here..." 
-        autocomplete="off"
+      <textarea
+          id="{{$todoValueId}}"
+          name="value"
+          type="text" 
+          placeholder="Enter Value Here..." 
+          autocomplete="off"
 
 
-        {{if .Completed}}readonly{{end}}
+          {{if .Completed}}readonly{{end}}
 
-        hx-post="/todos?setFocus=true"
-        hx-trigger="keyup[event.code=='Enter']"
-        hx-target="#{{$todoId}}"
-        hx-swap="afterend"
-        hx-vals='{"value": "{{$.Value}}"}'
+          hx-post="/todos?setFocus=true"
+          hx-trigger="keyup[event.code=='Enter']"
+          hx-target="#{{$todoId}}"
+          hx-swap="afterend"
+          hx-vals='{"value": "{{$.Value}}"}'
 
-        onkeydown="if (event.key === 'Enter') event.preventDefault();"
+          onkeydown="if (event.key === 'Enter') event.preventDefault();"
 
-        class="placeholder:text-gray-500 text-xs no-scrollbar dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-120 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
-    >{{ .Value }}</textarea>
+          class="placeholder:text-gray-500 text-xs no-scrollbar dark:placeholder:text-gray-300 field-sizing-content resize-none ml-3 min-w-0 max-w-120 flex-1 bg-transparent focus-visible:outline-none read-only:text-green-500 read-only:line-through" 
+      >{{ .Value }}</textarea>
+    </div>
 
     <button 
         type="button"

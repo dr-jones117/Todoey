@@ -100,5 +100,6 @@ func SetupHTTPHandlers(router *gin.Engine, tda dataaccess.TodoDataAccess) {
 
 		authorized.GET("/historical-todos", getHistoricalTodos)
 		authorized.DELETE("/historical-todos", deleteHistoricalTodos)
+		authorized.PUT("/restore-todo", restoreTodo)
 	}
 }
